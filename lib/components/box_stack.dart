@@ -5,10 +5,10 @@ import 'tuki.dart';
 class BoxStack extends PositionComponent with HasGameRef {
   final int numBoxes = 5; // Number of boxes
   final double boxSize = 25; // Box size
-  final double tiltSpeed = 0.5; // Speed of tilt (adjustable)
+  final double tiltSpeed = 4; // Speed of tilt (adjustable)
   List<SpriteComponent> boxes = [];
   final Tuki tuki;
-  double tiltAngle = 0; // Current tilt angle (counterclockwise)
+  double tiltAngle = 90; // Current tilt angle (counterclockwise)
 
   BoxStack(this.tuki);
 
@@ -28,23 +28,25 @@ class BoxStack extends PositionComponent with HasGameRef {
   void update(double dt) {
     super.update(dt);
 
-    // Update tilt angle (oscillating counterclockwise)
+    // Update tilt angle (Counterclockwise movement)
     tiltAngle += tiltSpeed * dt;
     double tiltRadians = tiltAngle * (pi / 180); // Convert degrees to radians
 
-    // Bottom box follows Tuki's shoulder
-    Vector2 bottomBoxPos =
+    // Bottom box follows Tuki's shoulder and tilts
+    Vector2 basePos =
         tuki.position + Vector2(tuki.size.x / 2 - boxSize / 2, -boxSize);
-    boxes[0].position = bottomBoxPos;
+    boxes[0].position = basePos;
+    boxes[0].angle = tiltRadians; // Bottom box tilts
 
-    // Rotate other boxes around the bottom one
+    // Tilt each box relative to the bottom box
     for (int i = 1; i < boxes.length; i++) {
       double radius = i * boxSize; // Distance from the bottom box
-      double xOffset = sin(tiltRadians) * radius;
-      double yOffset = -cos(tiltRadians) * radius; // Negative to move upwards
+      double xOffset = cos(tiltRadians) * radius; // Counterclockwise tilt
+      double yOffset =
+          -sin(tiltRadians) * radius; // Adjust for natural stacking
 
       boxes[i].position = boxes[0].position + Vector2(xOffset, yOffset);
-      boxes[i].angle = tiltRadians; // Rotate the sprite
+      boxes[i].angle = tiltRadians; // Apply same tilt to maintain stacking
     }
   }
 }
