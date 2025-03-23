@@ -17,4 +17,12 @@ class Terrain extends ParallaxComponent {
       repeat: ImageRepeat.repeatX,
     );
   }
+
+  void stopMoving() {
+    parallax?.baseVelocity = Vector2.zero(); // Stop movement
+  }
+
+  void resumeMoving() {
+    parallax?.baseVelocity = Vector2(speed, 0); // Resume movement
+  }
 }

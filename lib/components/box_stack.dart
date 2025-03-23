@@ -1,17 +1,20 @@
 import 'package:flame/components.dart';
 import 'dart:math';
 import 'tuki.dart';
+import 'package:tuki_game/main.dart';
 
-class BoxStack extends PositionComponent with HasGameRef {
+class BoxStack extends PositionComponent with HasGameRef<TukiGame> {
   final int numBoxes = 5; // Number of boxes
   final double boxSize = 25; // Box size
   final double tiltSpeed = 20; // Speed of automatic counterclockwise tilt
   final double tapTiltAmount =
       10; // ✅ How much tilt is added per tap (adjustable)
+  final double criticalAngle = 60; // Game over if tilt exceeds this angle
 
   List<SpriteComponent> boxes = [];
   final Tuki tuki;
   double tiltAngle = 90; // Current tilt angle (counterclockwise)
+  bool isGameOver = false; // Track game over state
 
   BoxStack(this.tuki);
 
@@ -33,10 +36,19 @@ class BoxStack extends PositionComponent with HasGameRef {
 
   @override
   void update(double dt) {
+    if (isGameOver) return; // Stop updating if game is over
+
     super.update(dt);
 
     // ✅ Apply automatic counterclockwise tilt
     tiltAngle += tiltSpeed * dt;
+
+    // ✅ Check Game Over condition
+    if (tiltAngle > (90 + criticalAngle) || tiltAngle < (90 - criticalAngle)) {
+      isGameOver = true;
+      gameRef.onGameOver(); // Notify game of Game Over
+      return;
+    }
     double tiltRadians = tiltAngle * (pi / 180); // Convert degrees to radians
 
     // Bottom box follows Tuki's shoulder and tilts
@@ -55,5 +67,10 @@ class BoxStack extends PositionComponent with HasGameRef {
       boxes[i].position = boxes[0].position + Vector2(xOffset, yOffset);
       boxes[i].angle = tiltRadians; // Apply same tilt to maintain stacking
     }
+  }
+
+  void resetStack() {
+    tiltAngle = 90; // Reset to default tilt
+    isGameOver = false; // Resume game
   }
 }
