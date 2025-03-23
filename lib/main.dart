@@ -1,4 +1,5 @@
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:tuki_game/components/box_stack.dart';
@@ -9,7 +10,7 @@ void main() {
   runApp(GameWidget(game: TukiGame()));
 }
 
-class TukiGame extends FlameGame {
+class TukiGame extends FlameGame with TapDetector {
   late final Tuki tuki;
   late final Terrain terrain;
   late final BoxStack stack;
@@ -27,5 +28,10 @@ class TukiGame extends FlameGame {
     add(terrain);
     add(tuki);
     add(stack);
+  }
+
+  @override
+  void onTapDown(TapDownInfo info) {
+    stack.tiltClockwise(); // Tell the stack to tilt clockwise when tapped
   }
 }

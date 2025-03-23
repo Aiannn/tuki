@@ -5,12 +5,19 @@ import 'tuki.dart';
 class BoxStack extends PositionComponent with HasGameRef {
   final int numBoxes = 5; // Number of boxes
   final double boxSize = 25; // Box size
-  final double tiltSpeed = 4; // Speed of tilt (adjustable)
+  final double tiltSpeed = 20; // Speed of automatic counterclockwise tilt
+  final double tapTiltAmount =
+      10; // ✅ How much tilt is added per tap (adjustable)
+
   List<SpriteComponent> boxes = [];
   final Tuki tuki;
   double tiltAngle = 90; // Current tilt angle (counterclockwise)
 
   BoxStack(this.tuki);
+
+  void tiltClockwise() {
+    tiltAngle -= tapTiltAmount; // ✅ Reduce angle → tilts clockwise
+  }
 
   @override
   Future<void> onLoad() async {
@@ -28,7 +35,7 @@ class BoxStack extends PositionComponent with HasGameRef {
   void update(double dt) {
     super.update(dt);
 
-    // Update tilt angle (Counterclockwise movement)
+    // ✅ Apply automatic counterclockwise tilt
     tiltAngle += tiltSpeed * dt;
     double tiltRadians = tiltAngle * (pi / 180); // Convert degrees to radians
 
