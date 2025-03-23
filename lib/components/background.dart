@@ -2,10 +2,10 @@ import 'package:flame/components.dart';
 import 'package:flame/parallax.dart';
 import 'package:flutter/material.dart';
 
-class Terrain extends ParallaxComponent {
+class Background extends ParallaxComponent {
   final double speed;
 
-  Terrain(this.speed);
+  Background(this.speed);
 
   @override
   Future<void> onLoad() async {

@@ -4,7 +4,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:tuki_game/components/box_stack.dart';
 import 'package:tuki_game/components/game_over_overlay.dart';
-import 'package:tuki_game/components/terrain.dart';
+import 'package:tuki_game/components/background.dart';
 import 'package:tuki_game/components/tuki.dart';
 
 void main() {
@@ -18,21 +18,21 @@ void main() {
 
 class TukiGame extends FlameGame with TapDetector {
   late final Tuki tuki;
-  late final Terrain terrain;
+  late final Background background;
   late final BoxStack stack;
 
-  final double terrainSpeed = 100; // Adjust speed here
+  final double backgroundSpeed = 100; // Adjust speed here
   bool isGameOver = false;
 
   @override
   Future<void> onLoad() async {
     camera.viewfinder.anchor = Anchor.topLeft;
 
-    terrain = Terrain(terrainSpeed);
+    background = Background(backgroundSpeed);
     tuki = Tuki();
     stack = BoxStack(tuki);
 
-    add(terrain);
+    add(background);
     add(tuki);
     add(stack);
   }
@@ -48,7 +48,7 @@ class TukiGame extends FlameGame with TapDetector {
 
   void onGameOver() {
     isGameOver = true;
-    terrain.stopMoving(); // Stop terrain movement
+    background.stopMoving(); // Stop background movement
     overlays.add('Game Over'); // Show game over overlay
   }
 
@@ -57,6 +57,6 @@ class TukiGame extends FlameGame with TapDetector {
     overlays.remove('Game Over'); // Remove game over overlay
 
     stack.resetStack(); // Reset stack tilt
-    terrain.resumeMoving(); // Resume terrain movement
+    background.resumeMoving(); // Resume background movement
   }
 }
