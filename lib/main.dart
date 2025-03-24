@@ -1,10 +1,12 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
+import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
 import 'package:tuki_game/components/box_stack.dart';
 import 'package:tuki_game/components/game_over_overlay.dart';
 import 'package:tuki_game/components/background.dart';
+import 'package:tuki_game/components/terrain.dart';
 import 'package:tuki_game/components/tuki.dart';
 
 void main() {
@@ -16,23 +18,29 @@ void main() {
   ));
 }
 
-class TukiGame extends FlameGame with TapDetector {
+class TukiGame extends Forge2DGame with TapDetector {
   late final Tuki tuki;
   late final Background background;
+  late final Terrain terrain;
   late final BoxStack stack;
 
   final double backgroundSpeed = 100; // Adjust speed here
+  final double maxTerrainHeight = 150; // Adjust max height for hills
   bool isGameOver = false;
+
+  TukiGame() : super(gravity: Vector2(0, 10)); // Add gravity
 
   @override
   Future<void> onLoad() async {
     camera.viewfinder.anchor = Anchor.topLeft;
 
     background = Background(backgroundSpeed);
+    terrain = Terrain(maxHeight: maxTerrainHeight);
     tuki = Tuki();
     stack = BoxStack(tuki);
 
     add(background);
+    add(terrain);
     add(tuki);
     add(stack);
   }
