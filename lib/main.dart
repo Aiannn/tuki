@@ -36,11 +36,15 @@ class TukiGame extends Forge2DGame with TapDetector {
 
     background = Background(backgroundSpeed);
     terrain = Terrain(maxHeight: maxTerrainHeight);
-    tuki = Tuki();
-    stack = BoxStack(tuki);
 
     add(background);
-    add(terrain);
+    await add(terrain);
+
+    await terrain.isReady.future; // Wait for terrain to be generated
+
+    tuki = Tuki(terrain: terrain);
+    stack = BoxStack(tuki);
+
     add(tuki);
     add(stack);
   }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:fast_noise/fast_noise.dart'; // ✅ Correct import for fast_noise 2.0.0
 import 'dart:math';
@@ -18,11 +20,14 @@ class Terrain extends BodyComponent {
   final Paint terrainPaint = Paint()
     ..color = const Color(0xFFE3D0AF); // ✅ Terrain color
 
+  final Completer<bool> isReady =
+      Completer<bool>(); // ✅ Completer to signal when terrain is ready
+
   Terrain({
     this.segmentWidth = 20, // ✅ Change this for more/less detailed terrain
     this.maxHeight = 120, // ✅ Change this to make hills taller
     this.terrainSpeed = -2, // ✅ Change this to control terrain speed
-    this.noiseFrequency = 0.1, // ✅ Change this for more/less frequent hills
+    this.noiseFrequency = 0.075, // ✅ Change this for more/less frequent hills
     this.noiseMultiplier = 2, // ✅ Change this to make slopes steeper or gentler
     this.smoothingFactor = 0.9, // ✅ Change this to control terrain smoothness
   }) : super(paint: Paint()..color = const Color(0xFFE3D0AF));
@@ -44,6 +49,7 @@ class Terrain extends BodyComponent {
       ..restitution = 0.1; // ✅ Ground absorbs impact slightly
 
     body.createFixture(fixtureDef);
+    isReady.complete(true); // Notify that terrain is ready
     return body;
   }
 
@@ -98,5 +104,26 @@ class Terrain extends BodyComponent {
     path.lineTo(shape.vertices.last.x, 600); // ✅ Close shape
     path.close();
     canvas.drawPath(path, terrainPaint);
+  }
+
+  double getHeightAt(double x) {
+    final shape =
+        body.fixtures.first.shape as ChainShape; // ✅ Cast to ChainShape
+    final vertices = shape.vertices; // ✅ Now we can access vertices safely
+
+    if (vertices.isEmpty) {
+      return 500; // Prevent out-of-bounds errors
+    }
+
+    int index = (x / segmentWidth).floor();
+    if (index < 0) {
+      return vertices
+          .first.y; // Use the first terrain point instead of hardcoding 500
+    }
+    if (index >= vertices.length) {
+      return vertices.last.y;
+    }
+
+    return 500 - vertices[index].y;
   }
 }
