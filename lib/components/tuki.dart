@@ -20,7 +20,7 @@ class Tuki extends BodyComponent
     spriteComponent = SpriteComponent()
       ..sprite = await Sprite.load('player_walk1.png')
       ..size = Vector2(characterWidth, characterHeight)
-      ..anchor = Anchor.bottomCenter;
+      ..anchor = Anchor.center;
 
     gameRef.add(spriteComponent);
   }
@@ -53,12 +53,15 @@ class Tuki extends BodyComponent
     world.raycast(callback, rayStart, rayEnd);
 
     if (callback.hitPoint != null && callback.hitNormal != null) {
-      final newPos = callback.hitPoint!;
-      final newAngle = callback.hitNormal!.angleTo(Vector2(0, -1)) * -1;
+      final groundPoint = callback.hitPoint!;
+      final angle = callback.hitNormal!.angleTo(Vector2(0, -1)) * -1;
 
-      body.setTransform(newPos, newAngle);
-      spriteComponent.position = body.position;
-      spriteComponent.angle = body.angle;
+      final corrected = groundPoint + Vector2(0, -characterHeight / 2);
+
+      body.setTransform(corrected, angle);
+
+      spriteComponent.position = corrected;
+      spriteComponent.angle = angle;
     }
   }
 
