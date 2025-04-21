@@ -105,21 +105,4 @@ class Terrain extends BodyComponent {
     path.close();
     canvas.drawPath(path, terrainPaint);
   }
-
-  double getSlopeAt(double x) {
-    final shape = body.fixtures.first.shape as ChainShape;
-    final vertices = shape.vertices;
-
-    if (vertices.isEmpty) return 0; // Prevent crash
-
-    int index = (x / segmentWidth).floor();
-    index = index.clamp(0, vertices.length - 2); // Prevent out-of-bounds
-
-    // ✅ Get two points to calculate the slope
-    Vector2 p1 = vertices[index];
-    Vector2 p2 = vertices[index + 1];
-
-    // ✅ Calculate slope angle using atan2
-    return atan2(p2.y - p1.y, p2.x - p1.x);
-  }
 }
