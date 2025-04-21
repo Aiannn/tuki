@@ -1,28 +1,70 @@
+import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flame/components.dart';
 import 'package:tuki_game/components/terrain.dart';
+import 'package:tuki_game/components/helpers/tuki_raycast.dart';
 
-class Tuki extends SpriteComponent {
+class Tuki extends BodyComponent
+    with ContactCallbacks, HasGameRef<Forge2DGame> {
   final Terrain terrain;
-  final double yOffset = 2; //Adjust how much above the terrain Tuki stands
+  late SpriteComponent spriteComponent;
+  final double characterWidth = 50;
+  final double characterHeight = 80;
+  final double rayLength = 500;
+  final double moveSpeed = 2.5;
 
   Tuki({required this.terrain});
 
   @override
   Future<void> onLoad() async {
-    sprite = await Sprite.load('player_walk1.png');
-    size = Vector2(75, 100); // Adjust based on asset
+    await super.onLoad();
+    spriteComponent = SpriteComponent()
+      ..sprite = await Sprite.load('player_walk1.png')
+      ..size = Vector2(characterWidth, characterHeight)
+      ..anchor = Anchor.bottomCenter;
 
-    // Start Tuki on the terrain surface
-    double terrainHeight = terrain.getHeightAt(size.x * 0.3);
-    position = Vector2(size.x * 0.3, terrainHeight - size.y + yOffset);
+    gameRef.add(spriteComponent);
+  }
+
+  @override
+  Body createBody() {
+    final bodyDef = BodyDef()
+      ..position = Vector2(50, 300)
+      ..type = BodyType.kinematic
+      ..fixedRotation = false; // ✅ Prevent unwanted rotation
+
+    final body = world.createBody(bodyDef);
+
+    final shape = PolygonShape()
+      ..setAsBox(characterWidth / 2, characterHeight / 2, Vector2.zero(), 0);
+    final fixtureDef = FixtureDef(shape);
+    body.createFixture(fixtureDef);
+
+    return body;
   }
 
   @override
   void update(double dt) {
     super.update(dt);
 
-    // Keep Tuki standing on the terrain surface
-    double terrainHeight = terrain.getHeightAt(position.x);
-    position.y = terrainHeight - size.y + yOffset;
+    final rayStart = body.position;
+    final rayEnd = body.position + Vector2(0, rayLength); // Cast ray downward
+
+    final callback = TukiRayCastCallback();
+    world.raycast(callback, rayStart, rayEnd);
+
+    if (callback.hitPoint != null && callback.hitNormal != null) {
+      final newPos = callback.hitPoint!;
+      final newAngle = callback.hitNormal!.angleTo(Vector2(0, -1)) * -1;
+
+      body.setTransform(newPos, newAngle);
+      spriteComponent.position = body.position;
+      spriteComponent.angle = body.angle;
+    }
+  }
+
+  @override
+  void onRemove() {
+    super.onRemove();
+    spriteComponent.removeFromParent(); // ✅ Remove sprite when Tuki is removed
   }
 }

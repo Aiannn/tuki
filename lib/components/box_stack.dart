@@ -52,8 +52,8 @@ class BoxStack extends PositionComponent with HasGameRef<TukiGame> {
     double tiltRadians = tiltAngle * (pi / 180); // Convert degrees to radians
 
     // Bottom box follows Tuki's shoulder and tilts
-    Vector2 basePos =
-        tuki.position + Vector2(tuki.size.x / 2 - boxSize / 2, -boxSize);
+    Vector2 basePos = tuki.body.position +
+        Vector2(tuki.characterWidth / 2 - boxSize / 2, -boxSize);
     boxes[0].position = basePos;
     boxes[0].angle = tiltRadians; // Bottom box tilts
 

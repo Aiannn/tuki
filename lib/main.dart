@@ -4,6 +4,7 @@ import 'package:flame/game.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
 import 'package:tuki_game/components/box_stack.dart';
+import 'package:tuki_game/components/debugging/grid_component.dart';
 import 'package:tuki_game/components/game_over_overlay.dart';
 import 'package:tuki_game/components/background.dart';
 import 'package:tuki_game/components/terrain.dart';
@@ -45,8 +46,10 @@ class TukiGame extends Forge2DGame with TapDetector {
     tuki = Tuki(terrain: terrain);
     stack = BoxStack(tuki);
 
-    add(tuki);
+    await add(tuki);
     add(stack);
+
+    add(GridComponent(gridSize: 50, size: Size(500, 500)));
   }
 
   @override

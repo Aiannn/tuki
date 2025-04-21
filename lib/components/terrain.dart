@@ -24,7 +24,7 @@ class Terrain extends BodyComponent {
       Completer<bool>(); // ✅ Completer to signal when terrain is ready
 
   Terrain({
-    this.segmentWidth = 20, // ✅ Change this for more/less detailed terrain
+    this.segmentWidth = 10, // ✅ Change this for more/less detailed terrain
     this.maxHeight = 120, // ✅ Change this to make hills taller
     this.terrainSpeed = -2, // ✅ Change this to control terrain speed
     this.noiseFrequency = 0.075, // ✅ Change this for more/less frequent hills
@@ -106,24 +106,20 @@ class Terrain extends BodyComponent {
     canvas.drawPath(path, terrainPaint);
   }
 
-  double getHeightAt(double x) {
-    final shape =
-        body.fixtures.first.shape as ChainShape; // ✅ Cast to ChainShape
-    final vertices = shape.vertices; // ✅ Now we can access vertices safely
+  double getSlopeAt(double x) {
+    final shape = body.fixtures.first.shape as ChainShape;
+    final vertices = shape.vertices;
 
-    if (vertices.isEmpty) {
-      return 500; // Prevent out-of-bounds errors
-    }
+    if (vertices.isEmpty) return 0; // Prevent crash
 
     int index = (x / segmentWidth).floor();
-    if (index < 0) {
-      return vertices
-          .first.y; // Use the first terrain point instead of hardcoding 500
-    }
-    if (index >= vertices.length) {
-      return vertices.last.y;
-    }
+    index = index.clamp(0, vertices.length - 2); // Prevent out-of-bounds
 
-    return 500 - vertices[index].y;
+    // ✅ Get two points to calculate the slope
+    Vector2 p1 = vertices[index];
+    Vector2 p2 = vertices[index + 1];
+
+    // ✅ Calculate slope angle using atan2
+    return atan2(p2.y - p1.y, p2.x - p1.x);
   }
 }
