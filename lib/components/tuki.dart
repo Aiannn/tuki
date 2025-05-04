@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flame/components.dart';
 import 'package:tuki_game/components/terrain.dart';
@@ -54,11 +56,13 @@ class Tuki extends BodyComponent
 
     if (callback.hitPoint != null && callback.hitNormal != null) {
       final groundPoint = callback.hitPoint!;
-      final angle = callback.hitNormal!.angleTo(Vector2(0, -1)) * -1;
+      // final angle = callback.hitNormal!.angleTo(Vector2(0, -1)) * -1;
+      final hitNormal = callback.hitNormal!;
+      final newAngle = atan2(hitNormal.x, -hitNormal.y);
 
       final corrected = groundPoint + Vector2(0, -characterHeight / 2);
 
-      body.setTransform(corrected, angle);
+      body.setTransform(corrected, newAngle);
 
       spriteComponent.position = corrected;
       spriteComponent.angle = angle;
