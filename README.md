@@ -90,3 +90,68 @@ To structure development and avoid stress, we will follow an **Agile/Scrum** app
 - **Week 7-8:** Polish animations, optimize performance, and refine gameplay balance.
 
 By following this structured plan, we aim to complete development in **1-2 months** with an iterative, stress-free approach.
+
+## IMPORTANT
+
+### As I am close to end developing the game, I modified already existing sprints and user stories. NOW I ORGANIZED IT THIS WAY:
+
+#### Sprint 1: Core Functionality and Alignment
+
+##### User Story 1: Align Body and Sprite Components
+
+###### Objective: Ensure Tuki's physics body and sprite are perfectly aligned in both size and position.
+
+1. Adjust the physics body's dimensions to match the sprite's size.
+2. Set both components' anchors to Anchor.center for consistent alignment.
+3. Implement a debug toggle to visualize the physics body during development.
+
+##### User Story 2: Implement Terrain and Background Movement
+
+###### Objective: Create the illusion of Tuki moving by animating the terrain and background.
+
+1. Develop a system to move terrain and background layers leftward at a consistent speed.
+2. Synchronize the movement speeds of terrain and background to maintain visual coherence.
+3. Ensure Tuki remains stationary horizontally while the environment moves.
+
+##### User Story 3: Procedural Terrain Generation
+
+###### Objective: Generate terrain dynamically to provide an endless path for Tuki.
+
+1. Initialize a set number of terrain chunks at game start.
+2. Implement logic to generate new terrain chunks as Tuki progresses.
+3. Remove off-screen terrain chunks to optimize performance.
+4. Ensure seamless connection between terrain chunks for a continuous experience.
+
+#### Sprint 2: Advanced Mechanics and Enhancements
+
+##### User Story 4: Dynamic Stack Tilting Based on Terrain Slope
+
+###### Objective: Adjust the tilt of Tuki's stack of boxes based on the terrain's slope.
+
+1. Detect the slope of the terrain beneath Tuki using raycasting.
+2. Modify the stack's tilt angle proportionally to the detected slope.
+3. Introduce variables to control the sensitivity and direction of the tilt for fine-tuning.
+
+##### User Story 5: Optimize Performance and Resource Management
+
+###### Objective: Ensure smooth gameplay by managing resources efficiently.
+
+1. Implement object pooling for terrain chunks to reduce instantiation overhead.
+2. Optimize rendering by culling off-screen elements.
+3. Profile the game to identify and address performance bottlenecks.
+
+#### Spikes
+
+##### Spike 1: Evaluate Terrain Generation Techniques
+
+###### Objective: Research and select the most suitable method for procedural terrain generation.
+
+1. Compare noise functions (e.g., Perlin, Simplex) for terrain generation.
+2. Assess the impact of different generation techniques on performance and visual appeal.
+
+##### Spike 2: Investigate Physics Engine Capabilities
+
+###### Objective: Understand the physics engine's features to better implement stack tilting.
+
+1. Explore the physics engine's support for compound bodies and joints.
+2. Determine the best approach to simulate realistic tilting behavior.
